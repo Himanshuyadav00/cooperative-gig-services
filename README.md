@@ -1,46 +1,142 @@
 # Cooperative Gig Services
 
-A modern landing page for a community-powered gig platform connecting local workers with businesses.
+A modern, community-powered gig platform connecting local workers with households and businesses through intelligent, fair and location-aware service matching.
 
-## Local development
+## Smart India Hackathon 2026
 
-1. Install dependencies:
-   npm install
-2. Start the Vite dev server:
-   npm run dev
-3. Open the local URL shown in the terminal (usually http://localhost:5173)
+**Problem Statement ID:** SIH26089  
+**Organisation:** Ministry of Cooperation  
+**Theme:** Cooperative Gig Services Platform for Household & Community Services
 
-## Production build
+## Problem
 
-Run:
+Households looking for local services and workers looking for jobs rarely find each other efficiently. This mismatch wastes time, increases travel, and can lead to uneven worker utilisation.
 
+## Solution
+
+Cooperative Gig Services is a two-sided matching platform that connects service requests with suitable available workers using:
+
+- **Skill** — matches worker capabilities with the requested service.
+- **Distance** — prioritises suitable workers who are closer to the request.
+- **Availability** — considers whether a worker is currently available.
+- **Fairness** — helps distribute opportunities across the worker pool.
+
+## Matching Model
+
+```text
+Utility Score =
+0.50 × Skill Fit
++ 0.30 × Distance Score
++ 0.20 × Availability
+```
+
+The matching system can be evaluated against a **nearest-available baseline** using:
+
+- Match acceptance rate
+- Mean travel distance
+- Worker-utilisation fairness
+
+## Project Objectives
+
+1. Build a two-sided matcher for service requests and available workers.
+2. Evaluate at least **1,000 simulated requests** against **200 worker profiles**.
+3. Compare the matcher with a nearest-available baseline.
+4. Analyse acceptance, travel distance and worker-utilisation fairness.
+
+## Features
+
+- Modern responsive landing page
+- Worker and business user journeys
+- Interactive service-matching concept
+- Skill, distance and availability based matching
+- Fairness-focused worker allocation
+- Community-oriented platform design
+- Mobile-friendly interface
+- GitHub Pages-ready deployment
+
+## Tech Stack
+
+- React
+- JavaScript / JSX
+- Vite
+- CSS3
+- Responsive Web Design
+
+## Local Development
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open the local URL shown by Vite, normally:
+
+```text
+http://localhost:5173
+```
+
+## Production Build
+
+```bash
 npm run build
+```
 
-This creates a production bundle in the `dist` folder.
+The production files are generated in the `dist/` directory.
 
-## Deployment options
+## Project Structure
 
-### GitHub Pages
+```text
+src/
+├── assets/
+├── App.jsx
+├── App.css
+├── index.css
+└── main.jsx
 
-1. Install the GitHub Pages package:
-   npm install -D gh-pages
-2. Add this script to `package.json`:
-   "deploy": "vite build && gh-pages -d dist"
-3. Run:
-   npm run deploy
+public/
+├── favicon.svg
+└── icons.svg
 
-### Netlify
+index.html
+package.json
+vite.config.js
+README.md
+```
 
-1. Push the project to GitHub.
-2. In Netlify, choose "Add new site" → "Import an existing project".
-3. Set the build command to:
-   npm run build
-4. Set the publish directory to:
-   dist
+## Future Scope
 
-## Project structure
+- Real-time GPS-based matching
+- Worker registration and verification
+- User authentication
+- Booking and scheduling
+- Ratings and reviews
+- Online payments
+- Notifications
+- Backend database and APIs
+- AI/ML-based worker ranking
+- Advanced fairness and utilisation analytics
 
-- `src/App.jsx` – main landing page layout
-- `src/App.css` – page styling
-- `src/index.css` – global styles and resets
-- `vite.config.js` – Vite config with a relative base path for deployability
+## SIH Reference
+
+Smart India Hackathon 2026 — **SIH26089**
+
+Official portal:  
+https://sih.gov.in/sih2026PS
+
+## Developer
+
+**Himanshu Yadav**
+
+GitHub:  
+https://github.com/Himanshuyadav00
+
+---
+
+Built as a Smart India Hackathon 2026 project prototype.
