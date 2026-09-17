@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import './App.css'
 
 const metrics = [
@@ -71,6 +72,26 @@ const testimonials = [
 ]
 
 function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isSignedIn, setIsSignedIn] = useState(false)
+  const [loginError, setLoginError] = useState('')
+
+  const handleSignIn = (event) => {
+    event.preventDefault()
+
+    if (!email.trim() || !password.trim()) {
+      setLoginError('Please enter both your email and password.')
+      return
+    }
+
+    setLoginError('')
+    setIsSignedIn(true)
+    setIsModalOpen(false)
+    setPassword('')
+  }
+
   return (
     <div className="app-shell">
       <header className="site-header">
@@ -88,11 +109,69 @@ function App() {
           </nav>
 
           <div className="nav-actions">
-            <a href="#signin" className="btn btn-ghost">Sign in</a>
+            <button
+              type="button"
+              className="btn btn-ghost sign-in-button"
+              onClick={() => {
+                setIsModalOpen(true)
+                setLoginError('')
+              }}
+            >
+              {isSignedIn ? 'Signed in' : 'Sign in'}
+            </button>
             <a href="#join" className="btn btn-primary">Join now</a>
           </div>
         </div>
       </header>
+
+      {isModalOpen && (
+        <div className="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="signin-title">
+          <div className="modal-card">
+            <button
+              type="button"
+              className="modal-close"
+              onClick={() => {
+                setIsModalOpen(false)
+                setLoginError('')
+              }}
+              aria-label="Close sign in form"
+            >
+              ×
+            </button>
+
+            <div className="modal-header">
+              <span className="eyebrow">Welcome back</span>
+              <h2 id="signin-title">Sign in to CoopGig</h2>
+            </div>
+
+            <form className="signin-form" onSubmit={handleSignIn}>
+              <label>
+                <span>Email</span>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="you@example.com"
+                />
+              </label>
+
+              <label>
+                <span>Password</span>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder="Enter your password"
+                />
+              </label>
+
+              {loginError && <p className="form-error">{loginError}</p>}
+
+              <button type="submit" className="btn btn-primary btn-full">Sign in</button>
+            </form>
+          </div>
+        </div>
+      )}
 
       <main id="top">
         <section className="hero">
@@ -109,6 +188,12 @@ function App() {
                 <a href="#join" className="btn btn-primary">Get started</a>
                 <a href="#features" className="btn btn-secondary">Explore platform</a>
               </div>
+
+              {isSignedIn && (
+                <div className="welcome-badge">
+                  Signed in as <strong>{email || 'member@coopgig.com'}</strong>
+                </div>
+              )}
 
               <ul className="hero-metrics" aria-label="Platform metrics">
                 {metrics.map((metric) => (
