@@ -1,4 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import {
+  auth,
+  firebaseEnabled,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+} from './firebase'
 import './App.css'
 
 const metrics = [
@@ -76,9 +83,22 @@ function App() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isSignedIn, setIsSignedIn] = useState(false)
+  const [userEmail, setUserEmail] = useState('')
   const [loginError, setLoginError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const handleSignIn = (event) => {
+  useEffect(() => {
+    if (!auth) return undefined
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsSignedIn(Boolean(user))
+      setUserEmail(user?.email || '')
+    })
+
+    return unsubscribe
+  }, [])
+
+  const handleSignIn = async (event) => {
     event.preventDefault()
 
     if (!email.trim() || !password.trim()) {
@@ -86,10 +106,36 @@ function App() {
       return
     }
 
+    if (!auth || !firebaseEnabled) {
+      setLoginError('Firebase is not configured. Add your Firebase environment variables to continue.')
+      return
+    }
+
+    setIsSubmitting(true)
     setLoginError('')
-    setIsSignedIn(true)
-    setIsModalOpen(false)
-    setPassword('')
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password)
+      setIsModalOpen(false)
+      setPassword('')
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Sign in failed. Please try again.'
+      setLoginError(message)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleSignOut = async () => {
+    if (!auth) return
+
+    try {
+      await signOut(auth)
+      setUserEmail('')
+      setIsSignedIn(false)
+    } catch (error) {
+      console.error('Sign out failed', error)
+    }
   }
 
   return (
@@ -109,16 +155,22 @@ function App() {
           </nav>
 
           <div className="nav-actions">
-            <button
-              type="button"
-              className="btn btn-ghost sign-in-button"
-              onClick={() => {
-                setIsModalOpen(true)
-                setLoginError('')
-              }}
-            >
-              {isSignedIn ? 'Signed in' : 'Sign in'}
-            </button>
+            {isSignedIn ? (
+              <button type="button" className="btn btn-ghost sign-in-button" onClick={handleSignOut}>
+                Sign out
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn btn-ghost sign-in-button"
+                onClick={() => {
+                  setIsModalOpen(true)
+                  setLoginError('')
+                }}
+              >
+                Sign in
+              </button>
+            )}
             <a href="#join" className="btn btn-primary">Join now</a>
           </div>
         </div>
@@ -167,7 +219,9 @@ function App() {
 
               {loginError && <p className="form-error">{loginError}</p>}
 
-              <button type="submit" className="btn btn-primary btn-full">Sign in</button>
+              <button type="submit" className="btn btn-primary btn-full" disabled={isSubmitting}>
+                {isSubmitting ? 'Signing in...' : 'Sign in'}
+              </button>
             </form>
           </div>
         </div>
@@ -191,7 +245,7 @@ function App() {
 
               {isSignedIn && (
                 <div className="welcome-badge">
-                  Signed in as <strong>{email || 'member@coopgig.com'}</strong>
+                  Signed in as <strong>{userEmail || 'member@coopgig.com'}</strong>
                 </div>
               )}
 

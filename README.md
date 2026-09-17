@@ -8,6 +8,42 @@ A modern, community-powered gig platform connecting local workers with household
 **Organisation:** Ministry of Cooperation  
 **Theme:** Cooperative Gig Services Platform for Household & Community Services
 
+## Firebase authentication
+
+The app is wired to a real Firebase Auth backend. To enable sign-in, create a Firebase project and add your web app config values to a local `.env` file before running the app.
+
+1. Create a Firebase project at https://console.firebase.google.com/
+2. Enable Email/Password sign-in under Authentication → Sign-in method
+3. Add a web app to the project and copy the config values
+4. Create a `.env` file in the project root based on `.env.example`
+
+Example:
+
+```bash
+cp .env.example .env
+```
+
+Then update `.env` with your Firebase values:
+
+```bash
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+```
+
+Once configured, the Sign in button will authenticate against Firebase instead of using a local mock state.
+
+## Local development
+
+1. Install dependencies:
+   npm install
+2. Start the Vite dev server:
+   npm run dev -- --host 0.0.0.0
+3. Open the local URL shown in the terminal (usually http://localhost:5173)
+
 ## Problem
 
 Households looking for local services and workers looking for jobs rarely find each other efficiently. This mismatch wastes time, increases travel, and can lead to uneven worker utilisation.
@@ -140,3 +176,9 @@ https://github.com/Himanshuyadav00
 ---
 
 Built as a Smart India Hackathon 2026 project prototype.
+
+Additional files:
+
+- `src/firebase.js` – Firebase configuration and auth helpers
+- `.env.example` – required Firebase environment variable names
+- `vite.config.js` – Vite config with a relative base path for deployability
