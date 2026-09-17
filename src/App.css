@@ -187,6 +187,20 @@
   margin-top: 6px;
 }
 
+.auth-switch {
+  border: 0;
+  padding: 0;
+  color: #1f7a4d;
+  background: transparent;
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.auth-switch:hover {
+  text-decoration: underline;
+}
+
 .welcome-badge {
   margin-top: 22px;
   display: inline-flex;

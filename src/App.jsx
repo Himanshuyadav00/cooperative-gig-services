@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
   auth,
+  createUserWithEmailAndPassword,
   firebaseEnabled,
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -86,6 +87,7 @@ function App() {
   const [userEmail, setUserEmail] = useState('')
   const [loginError, setLoginError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isCreatingAccount, setIsCreatingAccount] = useState(false)
 
   useEffect(() => {
     if (!auth) return undefined
@@ -115,11 +117,15 @@ function App() {
     setLoginError('')
 
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      if (isCreatingAccount) {
+        await createUserWithEmailAndPassword(auth, email, password)
+      } else {
+        await signInWithEmailAndPassword(auth, email, password)
+      }
       setIsModalOpen(false)
       setPassword('')
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Sign in failed. Please try again.'
+      const message = error instanceof Error ? error.message : 'Authentication failed. Please try again.'
       setLoginError(message)
     } finally {
       setIsSubmitting(false)
@@ -192,8 +198,8 @@ function App() {
             </button>
 
             <div className="modal-header">
-              <span className="eyebrow">Welcome back</span>
-              <h2 id="signin-title">Sign in to CoopGig</h2>
+              <span className="eyebrow">{isCreatingAccount ? 'Join the cooperative' : 'Welcome back'}</span>
+              <h2 id="signin-title">{isCreatingAccount ? 'Create your CoopGig account' : 'Sign in to CoopGig'}</h2>
             </div>
 
             <form className="signin-form" onSubmit={handleSignIn}>
@@ -220,7 +226,17 @@ function App() {
               {loginError && <p className="form-error">{loginError}</p>}
 
               <button type="submit" className="btn btn-primary btn-full" disabled={isSubmitting}>
-                {isSubmitting ? 'Signing in...' : 'Sign in'}
+                {isSubmitting ? 'Please wait...' : isCreatingAccount ? 'Create account' : 'Sign in'}
+              </button>
+              <button
+                type="button"
+                className="auth-switch"
+                onClick={() => {
+                  setIsCreatingAccount((current) => !current)
+                  setLoginError('')
+                }}
+              >
+                {isCreatingAccount ? 'Already have an account? Sign in' : 'New here? Create an account'}
               </button>
             </form>
           </div>
